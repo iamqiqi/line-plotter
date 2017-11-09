@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
    * (none)
    */
   const render = (point1, point2, top, right, bottom, left) => {
+    d3.selectAll('#line-plot > *').remove();
     // Map min/max x and y coordinates
     // to min/max pixels in chart
     const xRange = d3.scaleLinear()
@@ -60,15 +61,47 @@ document.addEventListener('DOMContentLoaded', () => {
        .call(yAxis);
 
     // Plot the line between the two points located at xMin and xMax
-    vis.append("line")
-      .style("stroke", "red")
+    vis.append('line')
+      .style('stroke', 'red')
       .attr('transform', `translate(${margin.left}, ${margin.top})`)
-      .attr("x1", xRange(point1.x))
-      .attr("y1", yRange(point1.y))
-      .attr("x2", xRange(point2.x))
-      .attr("y2", yRange(point2.y));
+      .attr('x1', xRange(point1.x))
+      .attr('y1', yRange(point1.y))
+      .attr('x2', xRange(point2.x))
+      .attr('y2', yRange(point2.y));
+
+    // Add axis labels
+    vis.append('text')
+       .text('x')
+       .attr('x', margin.left + graphWidth + margin.right / 2)
+       .attr('y', margin.top + yRange(0));
+
+    vis.append('text')
+       .text('y')
+       .attr('x', margin.left + xRange(0))
+       .attr('y', margin.top / 2);
   };
 
+  /*
+   * calculateAttributes
+   *
+   * arguments
+   * ---------
+   * xMin - minimum x to draw
+   * xMax - maximum x to draw
+   * m - slope
+   * b - y intercept
+   *
+   * return
+   * ------
+   * {
+   *   point1, - First endpoint of the line
+   *   point2, - Second endpoint of the line
+   *   top,    - Top bound of grid
+   *   right,  - Right bound of grid
+   *   bottom, - Bottom bound of grid
+   *   left,   - Left bound of grid
+   * }
+   */
   const calculateAttributes = (xMin, xMax, m, b) => {
     let point1, point2;
 
@@ -86,6 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         x: xMax,
         y: (2 * xMax) || 100,
       };
+
     // If a non-vertical line just calculate y = mx + b
     } else {
       point1 = {
@@ -133,16 +167,68 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  const displayChart = (xMin, xMax, m, b) => {
+  // Cache references to DOM elements
+  const xMinEl = document.querySelector('#x-min');
+  const xMaxEl = document.querySelector('#x-max');
+  const slopeEl = document.querySelector('#slope');
+  const interceptEl = document.querySelector('#intercept');
+  const errorEl = document.querySelector('#error-message');
+  const autoPlotCheckbox = document.querySelector('#auto-plot');
 
+  /*
+   * displayChart
+   *
+   * Fetches inputs from form
+   * Error checks inputs
+   * Calculates graph attributes
+   * Renders graph with attributes
+   */
+  const displayChart = () => {
+    let xMin = parseFloat(xMinEl.value);
+    let xMax = parseFloat(xMaxEl.value);
+    let slope = parseFloat(slopeEl.value);
+    let intercept = parseFloat(interceptEl.value);
+
+    if (isNaN(xMin) || isNaN(xMax)) {
+      errorEl.innerText = 'All inputs must be numbers'
+      return;
+    }
+
+    if (xMin > xMax) {
+      errorEl.innerText = 'Minimum x has to be less than Maximum x'
+      return;
+    }
+
+    errorEl.innerText = '';
     // Calculate the values render needs to create the chart
     const {
       point1, point2, top, right, bottom, left
-    } = calculateAttributes(xMin, xMax, m, b);
+    } = calculateAttributes(xMin, xMax, slope, intercept);
 
     // Use d3 to render the chart
     render(point1, point2, top, right, bottom, left);
   }
 
-  displayChart(-4, -4, 9, -10);
+  // Plot button clicked
+  document.querySelector('#param-submit').addEventListener('click', () => {
+    displayChart();
+  });
+
+  // Attempt an auto plot
+  const attemptAutoPlot = () => {
+    // Only automatically plot if the box is checked
+    if (autoPlotCheckbox.checked) {
+      displayChart();
+    }
+  }
+
+  // Attempt to automatically refresh the graph when any param changes
+  document.querySelectorAll('.param').forEach((input) => {
+    input.addEventListener('change', attemptAutoPlot);
+    input.addEventListener('keyup', attemptAutoPlot);
+    input.addEventListener('paste', attemptAutoPlot);
+  });
+
+  // Do the first render of the plot with default values
+  displayChart();
 });

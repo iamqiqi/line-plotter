@@ -1,12 +1,76 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>liner chart plot</title>
+  <meta charset="utf-8">
+  <title>Line Plotter</title>
+
+  <!-- d3 graphing library used to generate SVG -->
   <script src="https://d3js.org/d3.v4.min.js"></script>
-  <script src="client.js"></script>
+
+  <!-- Bootstrap base styles -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- Application -->
+  <script src="/client.js"></script>
+  <link rel="stylesheet" type="text/css" href="/styles.css">
 </head>
 <body>
-  <input type="color" name="">
-  <svg id="line-plot"></svg>
+  <h1 class="text-center title">Line Plotter</h1>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="inputs col-sm-offset-2 col-sm-3 form-horizontal">
+
+        <div class="form-group">
+          <label class="col-sm-5 control-label">Min x</label>
+          <div class="col-sm-5">
+            <input type="number" id="x-min" class="form-control input-sm param" value="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-5 control-label">Max x</label>
+          <div class="col-sm-5">
+            <input type="number" id="x-max" class="form-control input-sm param" input-sm value="20">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-5 control-label">Slope (m)</label>
+          <div class="col-sm-5">
+            <input type="number" id="slope" class="form-control input-sm param" value="1">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="col-sm-5 control-label">y Intercept (b)</label>
+          <div class="col-sm-5">
+            <input type="number" id="intercept" class="form-control input-sm param" value="0">
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-5 col-sm-5">
+            <button class="btn btn-primary btn-outline btn-block" id="param-submit">Plot</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-5 col-sm-5">
+            <label>
+              <input type="checkbox" id="auto-plot"> Auto-plot
+            </label>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-10">
+            <div class="alert alert-danger" id="error-message"></div>
+          </div>
+        </div>
+      </div>
+      <div class="plot col-sm-7">
+        <svg id="line-plot"></svg>
+      </div>
+      <div>
+    </div>
+  </div>
+
 </body>
 </html>

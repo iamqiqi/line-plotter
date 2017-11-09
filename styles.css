@@ -1,0 +1,25 @@
+.title {
+  margin: 40px 0 30px 0;
+}
+
+.btn-outline,
+.btn-outline:focus {
+  background-color: transparent;
+  color: inherit;
+}
+
+.btn-primary.btn-outline {
+  color: #428bca;
+}
+
+.btn-primary.btn-outline:hover {
+  color: #fff;
+}
+
+.btn-primary.btn-outline:focus:hover {
+  color: inherit;
+}
+
+.alert:empty {
+  display: none;
+}
