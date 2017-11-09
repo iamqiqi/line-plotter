@@ -45,8 +45,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Find target svg element on the page and set it's dimensions
     const vis = d3.select('#line-plot')
-       .attr('width', graphWidth + margin.left + margin.right)
-       .attr('height', graphHeight + margin.top + margin.bottom);
+                  .attr('width', graphWidth + margin.left + margin.right)
+                  .attr('height', graphHeight + margin.top + margin.bottom);
 
     // Add the xAxis that d3 rendered and move it into position
     // The y position is based on where 0 lies in the y-range
@@ -62,17 +62,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Plot the line between the two points located at xMin and xMax
     vis.append('line')
-      .style('stroke', 'red')
-      .attr('transform', `translate(${margin.left}, ${margin.top})`)
-      .attr('x1', xRange(point1.x))
-      .attr('y1', yRange(point1.y))
-      .attr('x2', xRange(point2.x))
-      .attr('y2', yRange(point2.y));
+       .style('stroke', 'red')
+       .attr('transform', `translate(${margin.left}, ${margin.top})`)
+       .attr('x1', xRange(point1.x))
+       .attr('y1', yRange(point1.y))
+       .attr('x2', xRange(point2.x))
+       .attr('y2', yRange(point2.y));
 
     // Add axis labels
     vis.append('text')
        .text('x')
-       .attr('x', margin.left + graphWidth + margin.right / 2)
+       .attr('x', margin.left + graphWidth + (margin.right / 2))
        .attr('y', margin.top + yRange(0));
 
     vis.append('text')
@@ -103,7 +103,8 @@ document.addEventListener('DOMContentLoaded', () => {
    * }
    */
   const calculateAttributes = (xMin, xMax, m, b) => {
-    let point1, point2;
+    let point1;
+    let point2;
 
     // If a vertical line, create custom points.
     // To keep a visual balance, try to
@@ -124,12 +125,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       point1 = {
         x: xMin,
-        y: m * xMin + b,
+        y: (m * xMin) + b,
       };
 
       point2 = {
         x: xMax,
-        y: m * xMax + b,
+        y: (m * xMax) + b,
       };
     }
 
@@ -143,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // In order to keep the unit-grid property (square pixels),
     // calculate the difference in height and width
     // and add half of the difference to each end of the
-    // shortest dimention.
+    // shortest dimension.
     const width = right - left;
     const height = top - bottom;
 
@@ -164,8 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
       right,
       bottom,
       left,
-    }
-  }
+    };
+  };
 
   // Cache references to DOM elements
   const xMinEl = document.querySelector('#x-min');
@@ -184,30 +185,31 @@ document.addEventListener('DOMContentLoaded', () => {
    * Renders graph with attributes
    */
   const displayChart = () => {
-    let xMin = parseFloat(xMinEl.value);
-    let xMax = parseFloat(xMaxEl.value);
-    let slope = parseFloat(slopeEl.value);
-    let intercept = parseFloat(interceptEl.value);
+    const xMin = parseFloat(xMinEl.value);
+    const xMax = parseFloat(xMaxEl.value);
+    const slope = parseFloat(slopeEl.value);
+    const intercept = parseFloat(interceptEl.value);
 
     if (isNaN(xMin) || isNaN(xMax)) {
-      errorEl.innerText = 'All inputs must be numbers'
+      errorEl.innerText = 'All inputs must be numbers';
       return;
     }
 
     if (xMin > xMax) {
-      errorEl.innerText = 'Minimum x has to be less than Maximum x'
+      errorEl.innerText = 'Minimum x has to be less than Maximum x';
       return;
     }
 
     errorEl.innerText = '';
+
     // Calculate the values render needs to create the chart
     const {
-      point1, point2, top, right, bottom, left
+      point1, point2, top, right, bottom, left,
     } = calculateAttributes(xMin, xMax, slope, intercept);
 
     // Use d3 to render the chart
     render(point1, point2, top, right, bottom, left);
-  }
+  };
 
   // Plot button clicked
   document.querySelector('#param-submit').addEventListener('click', () => {
@@ -219,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Only automatically plot if the box is checked
     if (autoPlotCheckbox.checked) {
       displayChart();
-    }
+    };
   }
 
   // Attempt to automatically refresh the graph when any param changes
